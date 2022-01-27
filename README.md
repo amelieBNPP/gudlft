@@ -44,7 +44,8 @@ pip install -r requirements.txt
 
 Server can be run using the following commands:
 ```bash
-export FLASK_APP=app.py
+export FLASK_APP=gudlft
+export FLASK_ENV=development
 python3 -m flask run
 ```
 

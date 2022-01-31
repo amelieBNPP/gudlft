@@ -1,19 +1,11 @@
-DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS clubs;
 DROP TABLE IF EXISTS competitions;
-
-CREATE TABLE user (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL
-);
 
 CREATE TABLE clubs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT NOT NULL,
   email NVARCHAR(320),
-  point INTEGER,
-  FOREIGN KEY (username) REFERENCES user (username)
+  points INTEGER
 );
 
 CREATE TABLE competitions (

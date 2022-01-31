@@ -3,6 +3,7 @@ import sqlite3
 import click
 from flask import current_app, g
 from flask.cli import with_appcontext
+import json
 
 
 def get_db():
@@ -28,6 +29,27 @@ def init_db():
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
+    for club in loadClubs():
+        db.execute(
+            "INSERT INTO clubs (username, email, points) VALUES (?,?,?)",(club['name'],club['email'],club['points'])
+        )
+    for competition in loadCompetitions():
+        db.execute(
+            "INSERT INTO competitions (name, date, numberOfPlaces) VALUES (?,?,?)",(competition['name'],competition['date'],competition['numberOfPlaces'])
+        )
+
+def loadClubs():
+    with open('gudlft/json/clubs.json') as c:
+         listOfClubs = json.load(c)['clubs']
+         return listOfClubs
+
+
+def loadCompetitions():
+    with open('gudlft/json/competitions.json') as comps:
+         listOfCompetitions = json.load(comps)['competitions']
+         return listOfCompetitions
+
+
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
@@ -40,3 +62,5 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     # adds a new command that can be called with the flask command.
     app.cli.add_command(init_db_command)
+    
+

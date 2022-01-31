@@ -46,6 +46,7 @@ Server can be run using the following commands:
 ```bash
 export FLASK_APP=gudlft
 export FLASK_ENV=development
+flask init-db # Initialize the Database File.
 python3 -m flask run
 ```
 

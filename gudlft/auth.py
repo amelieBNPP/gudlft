@@ -7,11 +7,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from gudlft.db import get_db
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__, url_prefix='/')
 
 
 @bp.route('/index', methods=('GET', 'POST'))
 def index():
+    print(request.method)
     if request.method == 'POST':
         email = request.form['email']
         db = get_db()
@@ -19,7 +20,7 @@ def index():
         user = db.execute(
             'SELECT * FROM clubs WHERE email = ?', (email,)
         ).fetchone()
-
+        return redirect(url_for('api.show_summary'))
         # if user is None:
         #     error = 'Unknown email.'
         # print(error)
@@ -48,7 +49,7 @@ def load_logged_in_user():
 def logout():
     """To log out, you need to remove the user id from the session."""
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('auth.index'))
 
 def login_required(view):
     @functools.wraps(view)
@@ -56,7 +57,7 @@ def login_required(view):
         """ This decorator checks if a user is loaded and redirects to the login page otherwise. 
         If a user is loaded the original view is called and continues normally. """
         if g.user is None:
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('auth.index'))
 
         return view(**kwargs)
 

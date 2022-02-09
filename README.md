@@ -66,6 +66,18 @@ To ensure new features do not add any regression in the code, run the tests with
 pytest
 ```
 
+#### Coverage report
+
+To ensure the tests coverage of the api we can use : 
+```bash
+coverage run -m pytest
+coverage report
+# An HTML report allow to see code lines covered by tests in htmlcov/index.html file
+coverage html
+```
+
+Coverage report : 
+![plot](./coverage_report_startProject.png)
 ### Locust
 
 Locust is an easy to create stress tests in python.

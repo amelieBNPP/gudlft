@@ -65,3 +65,16 @@ To ensure new features do not add any regression in the code, run the tests with
 ```bash
 pytest
 ```
+
+### Locust
+
+Locust is an easy to create stress tests in python.
+[Locust documentation](https://docs.locust.io/en/stable/quickstart.html#quickstart)_
+```bash
+locust
+```
+Point the test to your own web server : http://127.0.0.1:5000
+![plot](./Locust_startProject.png)
+
+Analyze report : 
+![plot](./Locust_startReport.png)

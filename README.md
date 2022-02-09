@@ -77,7 +77,7 @@ coverage html
 ```
 
 Coverage report : \
-![plot](./coverage_report_startProject.png)
+![plot](./coverageReport_startProject.png)
 ### Locust
 
 Locust is an easy to create stress tests in python.

@@ -76,7 +76,7 @@ coverage report
 coverage html
 ```
 
-Coverage report : 
+Coverage report : \
 ![plot](./coverage_report_startProject.png)
 ### Locust
 
@@ -85,8 +85,8 @@ Locust is an easy to create stress tests in python.
 ```bash
 locust
 ```
-Point the test to your own web server : http://127.0.0.1:5000
+Point the test to your own web server : http://127.0.0.1:5000 \
 ![plot](./Locust_startProject.png)
 
-Analyze report : 
+Analyze report : \
 ![plot](./Locust_startReport.png)

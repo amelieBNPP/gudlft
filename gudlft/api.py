@@ -1,9 +1,6 @@
-import functools
-
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, render_template, request
 )
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from gudlft.db import get_db
 
@@ -12,11 +9,9 @@ bp = Blueprint('api', __name__, url_prefix='/')
 
 @bp.route('/showSummary', methods=('GET', 'POST'))
 def showSummary():
-    print(request.method)
     if request.method == 'POST':
         email = request.form['email']
         db = get_db()
-        error = None
         club = db.execute(
             'SELECT * FROM clubs WHERE email=?', (email,)
         ).fetchone()
@@ -24,23 +19,18 @@ def showSummary():
             'SELECT * FROM competitions'
         )
         return render_template('api/welcome.html',club=club,competitions=competitions)
-    return render_template('api/show_summary')
+    return render_template('api/showSummary.html')
 
 
 @bp.route('/book/<competition>/<club>', methods=('GET', 'POST'))
 def book(competition,club):
-    print("iciiiiiiiiiii")
     db = get_db()
-    print(club)
     foundClub = db.execute(
             'SELECT * FROM clubs WHERE name=?', (club,)
     ).fetchone()
-    print(foundClub)
-    print(competition)
     foundCompetition = db.execute(
             'SELECT * FROM competitions WHERE name=?', (competition,)
     ).fetchone()
-    print(foundCompetition)
     if foundClub and foundCompetition:
         print("Done")
         return render_template('api/booking.html',club=foundClub,competition=foundCompetition)
@@ -77,8 +67,6 @@ def update_number_of_places(placesRequired, competition, club):
     db = get_db()
     numberOfPlacesUpdated = int(competition['numberOfPlaces'])-int(placesRequired)
     numberOfPointsUpdated = int(club['points'])-int(placesRequired)
-    print(competition['name'])
-    print(int(numberOfPlacesUpdated))
     db.execute(
         'UPDATE competitions SET numberOfPlaces=? WHERE name=?', (int(numberOfPlacesUpdated), str(competition),)
     )

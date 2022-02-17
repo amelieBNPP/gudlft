@@ -28,15 +28,19 @@ def init_db():
 
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
+        
 
+def load_db():
+    db = get_db()    
     for club in loadClubs():
         db.execute(
-            "INSERT INTO clubs (username, email, points) VALUES (?,?,?)",(club['name'],club['email'],club['points'])
+            "INSERT INTO clubs (name, email, points) VALUES (?,?,?)",(club['name'],club['email'],club['points'])
         )
     for competition in loadCompetitions():
         db.execute(
             "INSERT INTO competitions (name, date, numberOfPlaces) VALUES (?,?,?)",(competition['name'],competition['date'],competition['numberOfPlaces'])
         )
+    db.commit()
 
 def loadClubs():
     with open('gudlft/json/clubs.json') as c:
@@ -56,11 +60,16 @@ def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
     click.echo('Initialized the database.')
+
+@click.command('load-db')
+@with_appcontext
+def load_db_command():
+    load_db()
+    click.echo('Load the database.')
     
 def init_app(app):
     # tells Flask to call that function when cleaning up after returning the response.
     app.teardown_appcontext(close_db)
     # adds a new command that can be called with the flask command.
     app.cli.add_command(init_db_command)
-    
-
+    app.cli.add_command(load_db_command)    

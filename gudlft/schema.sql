@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS competitions;
 
 CREATE TABLE clubs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT NOT NULL,
+  name TEXT NOT NULL,
   email NVARCHAR(320),
   points INTEGER
 );

@@ -12,7 +12,6 @@ bp = Blueprint('auth', __name__, url_prefix='/')
 
 @bp.route('/index', methods=('GET', 'POST'))
 def index():
-    print(request.method)
     if request.method == 'POST':
         email = request.form['email']
         db = get_db()
@@ -20,7 +19,8 @@ def index():
         user = db.execute(
             'SELECT * FROM clubs WHERE email = ?', (email,)
         ).fetchone()
-        return redirect(url_for('api.show_summary'))
+        print(user)
+        return redirect(url_for('api.showSummary'))
         # if user is None:
         #     error = 'Unknown email.'
         # print(error)

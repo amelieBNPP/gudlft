@@ -1,31 +1,12 @@
-import functools
-
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
-)
-from werkzeug.security import check_password_hash, generate_password_hash
-
+from flask import Blueprint, flash, render_template, request
 from gudlft.db import get_db
+from gudlft import login_required
 
 bp = Blueprint('api', __name__, url_prefix='/')
 
 
-@bp.route('/showSummary', methods=('GET', 'POST'))
-def showSummary():
-    if request.method == 'POST':
-        email = request.form['email']
-        db = get_db()
-        club = db.execute(
-            'SELECT * FROM clubs WHERE email=?', (email,)
-        ).fetchone()
-        competitions = db.execute(
-            'SELECT * FROM competitions'
-        )
-        return render_template('api/welcome.html',club=club,competitions=competitions)
-    return render_template('api/showSummary.html')
-
-
 @bp.route('/book/<competition>/<club>', methods=('GET', 'POST'))
+@login_required
 def book(competition,club):
     db = get_db()
     foundClub = db.execute(
@@ -35,7 +16,6 @@ def book(competition,club):
             'SELECT * FROM competitions WHERE name=?', (competition,)
     ).fetchone()
     if foundClub and foundCompetition:
-        print("Done")
         return render_template('api/booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
@@ -43,6 +23,7 @@ def book(competition,club):
 
 
 @bp.route('/purchasePlaces',methods=['POST'])
+@login_required
 def purchasePlaces():
     db = get_db()
     competition = request.form['competition']

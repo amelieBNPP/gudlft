@@ -24,12 +24,7 @@ def showSummary():
     db = get_db()
     club = get_club_if_auth(request.form['email'], db)
     if club:
-        opened_competitions = db.execute(
-            'SELECT * FROM competitions WHERE date(date)>date("now")'    
-        )
-        closed_competitions = db.execute(
-            'SELECT * FROM competitions WHERE date(date)<date("now")'    
-        )
+        opened_competitions, closed_competitions = get_competitions_to_display(db)
 
         session['logged_in'] = True
         return render_template(
@@ -46,3 +41,12 @@ def get_club_if_auth(email, db):
     return db.execute(
         'SELECT * FROM clubs WHERE email=?', (email,)
     ).fetchone()
+
+def get_competitions_to_display(db):
+    opened_competitions = db.execute(
+            'SELECT * FROM competitions WHERE date(date)>date("now")'    
+        )
+    closed_competitions = db.execute(
+            'SELECT * FROM competitions WHERE date(date)<date("now")'    
+        )
+    return opened_competitions, closed_competitions

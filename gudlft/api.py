@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, render_template, request
 from gudlft.db import get_db
 from gudlft import login_required
+from gudlft.auth import get_competitions_to_display
 
 bp = Blueprint('api', __name__, url_prefix='/')
 
@@ -38,13 +39,13 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     update_number_of_places(request.form['places'], competition, club)
     
-    competitions = db.execute(
-            'SELECT * FROM competitions',
-    ).fetchall()
-    club = db.execute(
-            'SELECT * FROM clubs WHERE name=?',(request.form['club'],)
-    ).fetchone()
-    return render_template('api/welcome.html', club=club, competitions=competitions)
+    opened_competitions, closed_competitions = get_competitions_to_display(db)
+    return render_template(
+        'api/welcome.html', 
+        club=club, 
+        opened_competitions=opened_competitions, 
+        closed_competitions=closed_competitions,
+    )
 
 def update_number_of_places(placesRequired, competition, club):
     db = get_db()

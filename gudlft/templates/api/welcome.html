@@ -18,7 +18,7 @@
     Points available: {{club['points']}}
     <h3>Competitions:</h3>
     <ul>
-        {% for comp in competitions%}
+        {% for comp in opened_competitions%}
         <li>
             {{comp['name']}}<br />
             Date: {{comp['date']}}</br>
@@ -29,6 +29,16 @@
         </li>
         <hr />
         {% endfor %}
+        {% for comp in closed_competitions%}
+        <li>
+            {{comp['name']}}<br />
+            Date: {{comp['date']}}</br>
+            Number of Places: {{comp['numberOfPlaces']}}
+            <div style="color: grey">Tournament is closed</div>
+        </li>
+        <hr />
+        {% endfor %}
+
     </ul>
     {%endwith%}
 

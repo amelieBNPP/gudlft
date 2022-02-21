@@ -3,13 +3,20 @@ import logging
 from gudlft.api import update_number_of_places
 from gudlft.db import get_db
 from tests.conftest import login
+from flask import session
 
 def test_post_book_ok(client):
     login(client)
-    with client:
-        response = client.post('/book/competition/club')
-    assert response.status_code==HTTPStatus.FOUND
+    response = client.post('/book/competition/club')
+    assert response.status_code==HTTPStatus.OK
+    assert "Book" in response.data.decode('utf-8')
     
+def test_post_book_ko(client):
+    login(client)
+    response = client.post('/book/competition_closed/club')
+    assert response.status_code==HTTPStatus.OK
+    assert "competition_closed" in response.data.decode('utf-8')
+
 def test_update_places(client, app):
     PLACES_REQUIRED = 2
     CLUB = 'club'

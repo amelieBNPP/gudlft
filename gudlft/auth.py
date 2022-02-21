@@ -21,17 +21,28 @@ def logout():
 
 @bp.route('/showSummary', methods=('GET', 'POST'))
 def showSummary():
-    email=request.form['email']
     db = get_db()
-    club = db.execute(
-        'SELECT * FROM clubs WHERE email=?', (email,)
-    ).fetchone()
+    club = get_club_if_auth(request.form['email'], db)
     if club:
-        competitions = db.execute(
-            'SELECT * FROM competitions'    
+        opened_competitions = db.execute(
+            'SELECT * FROM competitions WHERE date(date)>date("now")'    
         )
+        closed_competitions = db.execute(
+            'SELECT * FROM competitions WHERE date(date)<date("now")'    
+        )
+
         session['logged_in'] = True
-        return render_template('api/welcome.html',club=club,competitions=competitions)
+        return render_template(
+            'api/welcome.html',
+            club=club,
+            opened_competitions=opened_competitions,
+            closed_competitions=closed_competitions,
+        )
     else:
         flash("Email unknown")
         return redirect(url_for('auth.index'))
+    
+def get_club_if_auth(email, db):
+    return db.execute(
+        'SELECT * FROM clubs WHERE email=?', (email,)
+    ).fetchone()

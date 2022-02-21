@@ -7,7 +7,7 @@ from tests.conftest import login
 def test_post_book_ok(client):
     login(client)
     with client:
-        response = client.post('/book/competition/club', data={'places': 1})
+        response = client.post('/book/competition/club')
     assert response.status_code==HTTPStatus.FOUND
     
 def test_update_places(client, app):

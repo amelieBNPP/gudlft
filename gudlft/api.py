@@ -36,7 +36,6 @@ def purchasePlaces():
             'SELECT * FROM clubs'
     ).fetchall()
     club = [c for c in clubs if c['name'] == request.form['club']][0]
-
     update_number_of_places(request.form['places'], competition, club)
     
     competitions = db.execute(
@@ -51,11 +50,18 @@ def update_number_of_places(placesRequired, competition, club):
     db = get_db()
     numberOfPlacesUpdated = int(competition['numberOfPlaces'])-int(placesRequired)
     numberOfPointsUpdated = int(club['points'])-int(placesRequired)
-    db.execute(
-        'UPDATE competitions SET numberOfPlaces=? WHERE name=?', (int(numberOfPlacesUpdated), str(competition),)
-    )
-    db.execute(
-        'UPDATE clubs SET points=? WHERE name=?', (int(numberOfPlacesUpdated), str(club),)
-    )
-    db.commit()
-    flash('Great-booking complete!')
+
+    if numberOfPointsUpdated>0 and numberOfPlacesUpdated>0:
+        db.execute(
+            'UPDATE competitions SET numberOfPlaces=? WHERE id=?', (int(numberOfPlacesUpdated), int(competition['id']),)
+        )
+        db.execute(
+            'UPDATE clubs SET points=? WHERE id=?', (int(numberOfPointsUpdated), int(club['id']),)
+        )
+        db.commit()
+        flash('Great-booking complete!')
+    elif numberOfPointsUpdated<0:
+        flash('Not enought points to book this competition!')
+    elif numberOfPlacesUpdated<0:
+        flash('Not enought places to book this competition!')
+    

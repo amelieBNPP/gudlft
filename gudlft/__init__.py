@@ -2,6 +2,9 @@ import os
 
 from flask import Flask
 
+from functools import wraps
+from flask import redirect, url_for, session, flash
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -34,3 +37,14 @@ def create_app(test_config=None):
     app.register_blueprint(api.bp)
 
     return app
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('auth.index'))
+
+    return wrap

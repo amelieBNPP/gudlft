@@ -1,16 +1,14 @@
-from tests.conftest import login
 from http import HTTPStatus
+import logging
 from gudlft.api import update_number_of_places
 from gudlft.db import get_db
+from tests.conftest import login
 
-def test_get_showSummary(client):
-    response = login(client)
-    assert response.headers['Location']=='http://localhost/showSummary'
-    
 def test_post_book_ok(client):
+    login(client)
     with client:
         response = client.post('/book/competition/club', data={'places': 1})
-    assert response.status_code==HTTPStatus.OK
+    assert response.status_code==HTTPStatus.FOUND
     
 def test_update_places(client, app):
     PLACES_REQUIRED = 2

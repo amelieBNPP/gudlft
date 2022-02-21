@@ -55,10 +55,14 @@ def update_number_of_places(placesRequired, competition, club):
     print(numberOfPointsUpdated)
     if numberOfPointsUpdated>0 and numberOfPlacesUpdated>0:
         db.execute(
-            'UPDATE competitions SET numberOfPlaces=? WHERE id=?', (int(numberOfPlacesUpdated), int(competition['id']),)
+            "INSERT INTO booking (id_competition, id_club, nbPlaces) VALUES (?,?,?)", (int(competition['id']),int(club['id']),int(placesRequired))
         )
         db.execute(
-            'UPDATE clubs SET points=? WHERE id=?', (int(numberOfPlacesUpdated), int(club['id']),)
+            'UPDATE competitions SET numberOfPlaces=? WHERE id=?', (int(numberOfPlacesUpdated), int(competition['id']),)
+        )
+        db.commit()
+        db.execute(
+            'UPDATE clubs SET points=? WHERE id=?', (int(numberOfPointsUpdated), int(club['id']),)
         )
         db.commit()
         flash('Great-booking complete!')

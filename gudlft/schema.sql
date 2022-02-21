@@ -14,3 +14,13 @@ CREATE TABLE competitions (
   date TIMESTAMP NOT NULL,
   numberOfPlaces INTEGER
 );
+
+CREATE TABLE booking (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id_competition INTEGER,
+  id_club INTEGER,
+  nbPlaces INTEGER,
+  date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  FOREIGN KEY (id_competition) REFERENCES competitions (id),
+  FOREIGN KEY (id_club) REFERENCES clubs (id)
+);

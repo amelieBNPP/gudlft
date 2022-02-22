@@ -10,12 +10,9 @@ bp = Blueprint('api', __name__, url_prefix='/')
 @login_required
 def book(competition,club):
     db = get_db()
-    foundClub = db.execute(
-            'SELECT * FROM clubs WHERE name=?', (club,)
-    ).fetchone()
-    foundCompetition = db.execute(
-            'SELECT * FROM competitions WHERE name=?', (competition,)
-    ).fetchone()
+    foundClub = get_clubs(db, club)
+    foundCompetition = get_competitions(db, competition)
+
     if foundClub and foundCompetition:
         return render_template('api/booking.html',club=foundClub,competition=foundCompetition)
     else:
@@ -27,19 +24,16 @@ def book(competition,club):
 @login_required
 def purchasePlaces():
     db = get_db()
-    competition = request.form['competition']
-    club = request.form['club']
-    competitions = db.execute(
-            'SELECT * FROM competitions',
-    ).fetchall()
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-    clubs = db.execute(
-            'SELECT * FROM clubs'
-    ).fetchall()
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
-    update_number_of_places(request.form['places'], competition, club)
     
+    competition = get_competitions(db,request.form['competition'])
+    
+    club = get_clubs(db, request.form['club'])
+    
+    update_number_of_places(db, request.form['places'], competition, club)
+    
+    club = get_clubs(db, request.form['club'])
     opened_competitions, closed_competitions = get_competitions_to_display(db)
+
     return render_template(
         'api/welcome.html', 
         club=club, 
@@ -47,27 +41,54 @@ def purchasePlaces():
         closed_competitions=closed_competitions,
     )
 
-def update_number_of_places(placesRequired, competition, club):
-    db = get_db()
+def update_number_of_places(db, placesRequired, competition, club):
     numberOfPlacesUpdated = int(competition['numberOfPlaces'])-int(placesRequired)
     numberOfPointsUpdated = int(club['points'])-int(placesRequired)
-    print(numberOfPlacesUpdated)
-    print(numberOfPointsUpdated)
-    if numberOfPointsUpdated>0 and numberOfPlacesUpdated>0:
+    numberOfPlaceAvailable = 12
+
+    booking = get_booking(db, competition['id'], club['id'])
+
+    if booking:
+        numberOfPlaceAvailable = 12 - sum([book['nbPlaces'] for book in booking]) - int(placesRequired)
+        
+    if numberOfPointsUpdated>0 and numberOfPlacesUpdated>0 and numberOfPlaceAvailable>0:
         db.execute(
             "INSERT INTO booking (id_competition, id_club, nbPlaces) VALUES (?,?,?)", (int(competition['id']),int(club['id']),int(placesRequired))
         )
         db.execute(
             'UPDATE competitions SET numberOfPlaces=? WHERE id=?', (int(numberOfPlacesUpdated), int(competition['id']),)
         )
-        db.commit()
         db.execute(
             'UPDATE clubs SET points=? WHERE id=?', (int(numberOfPointsUpdated), int(club['id']),)
         )
         db.commit()
         flash('Great-booking complete!')
+    elif numberOfPlaceAvailable<=0:
+        flash('You already booked more than 12 places!')
     elif numberOfPointsUpdated<0:
         flash('Not enought points to book this competition!')
     elif numberOfPlacesUpdated<0:
         flash('Not enought places to book this competition!')
     
+def get_clubs(db, name=None):
+    if name:
+        return db.execute(
+            'SELECT * FROM clubs WHERE name=?', (name,)
+        ).fetchone()
+    return db.execute(
+            'SELECT * FROM clubs'
+    ).fetchall()
+    
+def get_competitions(db, name=None):
+    if name:
+        return db.execute(
+            'SELECT * FROM competitions WHERE name=?', (name,)
+        ).fetchone()
+    return db.execute(
+            'SELECT * FROM competitions',
+    ).fetchall()
+    
+def get_booking(db, id_competition=None, id_club=None):
+    return  db.execute(
+        "SELECT * FROM booking WHERE id_competition=? AND id_club=?", (int(id_competition), int(id_club))
+    ).fetchall()

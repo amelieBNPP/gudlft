@@ -9,6 +9,7 @@ from gudlft.db import init_db, get_db
 MOCK_CLUBS = "INSERT INTO clubs (name, email, points) VALUES ('club', 'club@gmail.com', 4)"
 MOCK_COMPETITIONS = "INSERT INTO competitions (name, date, numberOfPlaces) VALUES ('competition', '2023-02-16 00:00:00', 25)"
 MOCK_COMPETITIONS_CLOSED = "INSERT INTO competitions (name, date, numberOfPlaces) VALUES ('competition_closed', '2021-02-16 00:00:00', 25)"
+MOCK_BOOKING = "INSERT INTO booking (id_competition, id_club, nbPlaces) VALUES (1, 1, 9)"
 
 @pytest.fixture
 def app():
@@ -24,6 +25,7 @@ def app():
             db.executescript(MOCK_CLUBS)
             db.executescript(MOCK_COMPETITIONS)
             db.executescript(MOCK_COMPETITIONS_CLOSED)
+            db.executescript(MOCK_BOOKING)
     
     yield app
     

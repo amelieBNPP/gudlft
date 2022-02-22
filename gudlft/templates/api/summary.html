@@ -1,0 +1,31 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clubs summary | GUDLFT Registration</title>
+</head>
+<body>
+    <h2>Clubs summary</h2>
+    <a href="{{url_for('auth.logout')}}">Logout</a>
+    <form action="showSummary" method="post">
+        <input type="hidden" name="email" value={{email}} />
+    <a href="#" onclick="this.closest('form').submit();return false;">Booking</a>
+    <br><br><br>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Point(s)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for club in clubs %}
+            <tr>
+                <td>{{club['name']}}</td>
+                <td>{{club['points']}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,10 +1,18 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, render_template, request, session
 from gudlft.db import get_db
 from gudlft import login_required
 from gudlft.auth import get_competitions_to_display
 
 bp = Blueprint('api', __name__, url_prefix='/')
 
+
+@bp.route('/clubSummary')
+@login_required
+def clubSummary():
+    """To display clubs summary."""
+    db = get_db()
+    clubs = get_clubs(db)
+    return render_template('api/summary.html', clubs=clubs, email=session['email'])
 
 @bp.route('/book/<competition>/<club>', methods=('GET', 'POST'))
 @login_required

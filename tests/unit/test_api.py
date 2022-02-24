@@ -32,7 +32,7 @@ def test_update_places_OK(client, app):
 
         club_after_booking = get_clubs(db, CLUB)
         competition_after_booking = get_competitions(db, COMPETITION)
-    assert club_before_booking['points']==(club_after_booking['points'] + PLACES_REQUIRED)
+    assert club_before_booking['points']==(club_after_booking['points'] + (PLACES_REQUIRED*3))
     assert competition_before_booking['numberOfPlaces']==(competition_after_booking['numberOfPlaces'] + PLACES_REQUIRED)
 
 
@@ -52,8 +52,8 @@ def test_update_places_KO(client, app):
         club_after_booking = get_clubs(db, CLUB)
         competition_after_booking = get_competitions(db, COMPETITION)
 
-    assert club_before_booking['points']!=(club_after_booking['points'] + PLACES_REQUIRED)
-    assert competition_before_booking['numberOfPlaces']!=(competition_after_booking['numberOfPlaces'] + PLACES_REQUIRED)
+    assert club_before_booking['points']==club_after_booking['points']
+    assert competition_before_booking['numberOfPlaces']==competition_after_booking['numberOfPlaces']
 
 def test_club_summary(client):
     login(client)

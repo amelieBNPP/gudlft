@@ -51,7 +51,7 @@ def purchasePlaces():
 
 def update_number_of_places(db, placesRequired, competition, club):
     numberOfPlacesUpdated = int(competition['numberOfPlaces'])-int(placesRequired)
-    numberOfPointsUpdated = int(club['points'])-int(placesRequired)
+    numberOfPointsUpdated = int(club['points'])-(int(placesRequired)*3)
     numberOfPlaceAvailable = 12
 
     booking = get_booking(db, competition['id'], club['id'])

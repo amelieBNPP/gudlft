@@ -27,6 +27,7 @@ def showSummary():
         opened_competitions, closed_competitions = get_competitions_to_display(db)
 
         session['logged_in'] = True
+        session['email'] = club['email']
         return render_template(
             'api/welcome.html',
             club=club,

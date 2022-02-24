@@ -54,4 +54,9 @@ def test_update_places_KO(client, app):
 
     assert club_before_booking['points']!=(club_after_booking['points'] + PLACES_REQUIRED)
     assert competition_before_booking['numberOfPlaces']!=(competition_after_booking['numberOfPlaces'] + PLACES_REQUIRED)
-     
+
+def test_club_summary(client):
+    login(client)
+    response = client.post('/clubSummary')
+    assert response.status_code==HTTPStatus.OK
+    assert "Clubs summary" in response.data.decode('utf-8')

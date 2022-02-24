@@ -1,3 +1,4 @@
+import email
 from flask import Blueprint, flash, render_template, request, session
 from gudlft.db import get_db
 from gudlft import login_required
@@ -6,8 +7,7 @@ from gudlft.auth import get_competitions_to_display
 bp = Blueprint('api', __name__, url_prefix='/')
 
 
-@bp.route('/clubSummary')
-@login_required
+@bp.route('/clubSummary', methods=('GET', 'POST'))
 def clubSummary():
     """To display clubs summary."""
     db = get_db()

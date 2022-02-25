@@ -82,7 +82,7 @@ Starting project
 ![plot](./coverageReport_startProject.png)
 
 Finishing project
-![plot](./coverageReport_endProject.png)
+![plot](./coverageReport_finishedProject.png)
 ### Locust
 
 Locust is an easy way to create stress tests in python.

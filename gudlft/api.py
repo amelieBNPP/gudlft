@@ -12,7 +12,8 @@ def clubSummary():
     """To display clubs summary."""
     db = get_db()
     clubs = get_clubs(db)
-    return render_template('api/summary.html', clubs=clubs, email=session['email'])
+    email = None if session=={} else session['email']
+    return render_template('api/summary.html', clubs=clubs, email=email)
 
 @bp.route('/book/<competition>/<club>', methods=('GET', 'POST'))
 @login_required

@@ -6,10 +6,12 @@
 </head>
 <body>
     <h2>Clubs summary</h2>
+    {%if email%}
     <a href="{{url_for('auth.logout')}}">Logout</a>
     <form action="showSummary" method="post">
         <input type="hidden" name="email" value={{email}} />
     <a href="#" onclick="this.closest('form').submit();return false;">Booking</a>
+    {%endif%}
     <br><br><br>
     <table border="1">
         <thead>

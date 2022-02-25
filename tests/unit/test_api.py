@@ -55,8 +55,15 @@ def test_update_places_KO(client, app):
     assert club_before_booking['points']==club_after_booking['points']
     assert competition_before_booking['numberOfPlaces']==competition_after_booking['numberOfPlaces']
 
-def test_club_summary(client):
+def test_club_summary_loggin(client):
     login(client)
     response = client.post('/clubSummary')
     assert response.status_code==HTTPStatus.OK
     assert "Clubs summary" in response.data.decode('utf-8')
+    assert "club@gmail.com" in response.data.decode('utf-8')
+    
+def test_club_summary_loggout(client):
+    response = client.post('/clubSummary')
+    assert response.status_code==HTTPStatus.OK
+    assert "Clubs summary" in response.data.decode('utf-8')
+    assert "club@gmail.com" not in response.data.decode('utf-8')

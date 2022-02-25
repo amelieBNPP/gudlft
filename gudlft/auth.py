@@ -12,7 +12,7 @@ bp = Blueprint('auth', __name__, url_prefix='/')
 def index():
     return render_template('auth/index.html')
         
-@bp.route('/logout')
+@bp.route('/logout', methods=('GET', 'POST'))
 @login_required
 def logout():
     """To log out, you need to remove the user id from the session."""

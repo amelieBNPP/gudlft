@@ -85,7 +85,7 @@ Finishing project
 ![plot](./coverageReport_endProject.png)
 ### Locust
 
-Locust is an easy to create stress tests in python.
+Locust is an easy way to create stress tests in python.
 [Locust documentation](https://docs.locust.io/en/stable/quickstart.html#quickstart)_
 ```bash
 locust

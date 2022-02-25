@@ -1,8 +1,6 @@
 from http import HTTPStatus
-
-def test_get_auth(client):
-    response = client.get('/index')
-    assert response.status_code==HTTPStatus.OK
+from tests.conftest import login
+from flask import session
 
 def test_post_auth_OK(client):
     response = client.post( 
@@ -17,5 +15,12 @@ def test_post_auth_KO(client):
         '/showSummary', 
         data=dict(email='wrongclub@gmail.com'),
     )
+    assert response.status_code==HTTPStatus.FOUND
+    assert response.headers['Location']=='http://localhost/index'
+    
+def test_log_out(client, app):
+    login(client)
+    with client:
+        response = client.post('/logout')
     assert response.status_code==HTTPStatus.FOUND
     assert response.headers['Location']=='http://localhost/index'

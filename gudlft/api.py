@@ -71,7 +71,9 @@ def update_number_of_places(db, placesRequired, competition, club):
             'UPDATE clubs SET points=? WHERE id=?', (int(numberOfPointsUpdated), int(club['id']),)
         )
         db.commit()
-        flash('Great-booking complete!')
+        flash(
+            f'Great-booking complete! You booked {placesRequired} places.'
+        )
     elif numberOfPlaceAvailable<=0:
         flash('You already booked more than 12 places!')
     elif numberOfPointsUpdated<0:

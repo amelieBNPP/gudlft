@@ -1,24 +1,41 @@
 from http import HTTPStatus
-import logging
 from gudlft.api import update_number_of_places, get_clubs, get_competitions, get_booking
+from gudlft.auth import get_club_if_auth, get_competitions_to_display
 from gudlft.db import get_db
 from tests.conftest import login
-from flask import session
 
-def test_post_book_ok(client):
-    login(client)
-    response = client.post('/book/competition/club')
+def test_get_index(client):
+    response = client.get('/index')
     assert response.status_code==HTTPStatus.OK
-    assert "Book" in response.data.decode('utf-8')
     
-def test_post_book_ko(client):
-    # Competition selected already closed because of past date
-    login(client)
-    response = client.post('/book/competition_closed/club')
-    assert response.status_code==HTTPStatus.OK
-    assert "competition_closed" in response.data.decode('utf-8')
+def test_get_club_ok(app):
+    db = get_db()
+    with app.app_context():
+        club = get_club_if_auth('club@gmail.com', db)
+    assert club['name'] == 'club'
 
-def test_update_places_OK(client, app):
+def test_get_club_KO(app):
+    db = get_db()
+    with app.app_context():
+        club = get_club_if_auth('wrongclub@gmail.com', db)
+    assert club == None
+    
+def test_get_competitions(app):
+    db = get_db()
+    with app.app_context():
+        competitions_opened, competition_closed = get_competitions_to_display(db)
+    opened = [c['name'] for c in competitions_opened]
+    closed = [c['name'] for c in competition_closed]
+    assert opened[0] == 'competition'
+    assert closed[0] == 'competition_closed'
+    
+def test_get_booking(app):
+    db = get_db()
+    with app.app_context():
+        booked = get_booking(db, 1, 1)
+    assert booked[0]['nbplaces'] == 9
+
+def test_update_places_OK(app):
     PLACES_REQUIRED = 2
     CLUB = 'club'
     COMPETITION = 'competition'
@@ -36,7 +53,7 @@ def test_update_places_OK(client, app):
     assert competition_before_booking['numberOfPlaces']==(competition_after_booking['numberOfPlaces'] + PLACES_REQUIRED)
 
 
-def test_update_places_KO(client, app):
+def test_update_places_KO(app):
     # MOE than 12 places booked
     PLACES_REQUIRED = 4
     CLUB = 'club'
@@ -55,15 +72,3 @@ def test_update_places_KO(client, app):
     assert club_before_booking['points']==club_after_booking['points']
     assert competition_before_booking['numberOfPlaces']==competition_after_booking['numberOfPlaces']
 
-def test_club_summary_loggin(client):
-    login(client)
-    response = client.post('/clubSummary')
-    assert response.status_code==HTTPStatus.OK
-    assert "Clubs summary" in response.data.decode('utf-8')
-    assert "club@gmail.com" in response.data.decode('utf-8')
-    
-def test_club_summary_loggout(client):
-    response = client.post('/clubSummary')
-    assert response.status_code==HTTPStatus.OK
-    assert "Clubs summary" in response.data.decode('utf-8')
-    assert "club@gmail.com" not in response.data.decode('utf-8')

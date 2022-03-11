@@ -90,8 +90,9 @@ Locust is an easy way to create stress tests in python.
 ```bash
 locust
 ```
+
 Point the test to your own web server : http://127.0.0.1:5000 \
-![plot](./Locust_startProject.png)
+![plot](./LocustConfig.png)
 
 Analyze report : \
-![plot](./Locust_startReport.png)
+![plot](./LocustEndProject.png)
